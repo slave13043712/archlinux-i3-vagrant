@@ -1,4 +1,5 @@
 #!/bin/sh
+# this script must be executed as root user
 username=$SUDO_USER
 userhome=$(getent passwd $SUDO_USER | cut -d: -f6)
 pacman --noconfirm -Syu
@@ -18,28 +19,8 @@ pacman --noconfirm -S \
     apache php-apache \
     virtualbox-guest-utils
 
-# copy configuration files
-rm "${userhome}/.bashrc" "${userhome}/.xinitrc"
-cp /vagrant/.bashrc "${userhome}/"
-cp /vagrant/.vimrc "${userhome}/"
-cp /vagrant/.xinitrc "${userhome}/"
-cp /vagrant/.Xresources "${userhome}/"
-cp /vagrant/.i3status.conf "${userhome}/"
-mkdir "${userhome}/.i3"
-cp /vagrant/.i3/config "${userhome}/.i3/config"
-cp /vagrant/.i3status.conf "${userhome}/.i3status.conf"
-cp /vagrant/.Xresources "${userhome}/.Xresources"
-mkdir "${userhome}/wallpapers"
-cp /vagrant/wallpaper.jpg "${userhome}/wallpapers/"
-
 # add user to the audio group
 usermod -a -G audio "${username}"
-
-# set some basic git config settings
-git config --global core.editor vim
-git config --global core.eol lf
-#git config --global user.name <your name>
-#git config --global user.email <your email>
 
 # configure php
 sed -i -- 's/^memory_limit = 128M/memory_limit = -1/g' /etc/php/php.ini
@@ -71,10 +52,6 @@ mkdir /srv/http/instances
 chown "${username}:${username}" /srv/http/instances
 # make sure that symlinks to home folder will work
 chmod +x "${userhome}"
-
-# create work folders
-mkdir -p "${userhome}/repositories/work"
-chown -R "${username}:${username}" "${userhome}/repositories"
 
 # enable display manager
 systemctl enable slim.service
