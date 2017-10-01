@@ -36,6 +36,7 @@ sed -i -- 's/^;extension=soap.so/extension=soap.so/g' /etc/php/php.ini
 sed -i -- 's/^;extension=xsl.so/extension=xsl.so/g' /etc/php/php.ini
 # enable xdebug
 sed -i -- 's/^;//g' /etc/php/conf.d/xdebug.ini
+echo 'xdebug.idekey=PHPSTORM' >> /etc/php/conf.d/xdebug.ini
 
 # do not forget to run mysql_secure_installation
 
